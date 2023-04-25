@@ -25,7 +25,7 @@ struct APIService {
                 return
             }
             guard error == nil  else {
-                completion(.failure(.dataTaskError))
+                completion(.failure(.dataTaskError(error!.localizedDescription)))
                 return
             }
             guard let data = data else{
@@ -40,7 +40,7 @@ struct APIService {
                 let decodedData = try decoder.decode(T.self, from: data)
                 completion(.success(decodedData))
             }catch {
-                completion(.failure(.decodingError))
+                completion(.failure(.decodingError(error.localizedDescription)))
             }
         }.resume()
         

@@ -11,6 +11,9 @@ import Foundation
 class PostListViewModels: ObservableObject {
     @Published var posts: [Post] = []
     @Published var isLoading = false
+    @Published var showAlert = false
+    @Published var errorMessage: String?
+    
     var userId: Int?
     
     func fetchPosts(){
@@ -31,6 +34,10 @@ class PostListViewModels: ObservableObject {
                 }
             case .failure(let error):
                 print(error)
+                DispatchQueue.main.async{
+                    self.showAlert = true
+                    self.errorMessage = error.localizedDescription
+                }
             }
 
         }
