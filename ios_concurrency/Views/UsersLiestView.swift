@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UsersListView: View {
-    
+    #warning("Set forPreview to false for production")
     @StateObject var vm = UsersListViewModel(forPreview: false)
     var body: some View {
         NavigationView {
@@ -24,22 +24,22 @@ struct UsersListView: View {
                         }
                     }
                 }
-            }.overlay {
+            }.overlay(
+                Group {
                 if vm.isLoading {
                     ProgressView()
                 }
-            }
-            .alert("ApplicationErrror", isPresented: $vm.showAlert,actions:{
-                Button("Ok"){}
-            }, message: {
-                if let errorMessage = vm.errorMessage {
-                    Text(errorMessage)
-                }
+            })
+            .alert(isPresented: $vm.showAlert,content: {
+                Alert(title: Text("ApplicationError"), message: Text(vm.errorMessage ?? ""))
             })
             .navigationTitle("Users")
                 .listStyle(.plain)
                 .onAppear {
-                    vm.fetchUsers()
+                    Task {
+                        
+                        await vm.fetchUsers()
+                    }
                 }
         }
     }
