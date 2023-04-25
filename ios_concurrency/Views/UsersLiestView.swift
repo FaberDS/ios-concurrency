@@ -9,18 +9,23 @@ import SwiftUI
 
 struct UsersListView: View {
     
-    @StateObject var vm = UsersListViewModel(forPreview: false)
+    @StateObject var vm = UsersListViewModel(forPreview: true)
     var body: some View {
         NavigationView {
             List{
-                ForEach(vm.users) { user in
+                ForEach(vm.userAndPosts) { userAndPosts in
                     NavigationLink {
-                        PostsListView(userId: user.id)
+                        PostsListView(posts: userAndPosts.posts)
                     } label: {
                         VStack(alignment: .leading){
-                            Text(user.name)
-                                .font(.title)
-                            Text(user.email)
+                            HStack {
+                                Text(userAndPosts.user.name)
+                                    .font(.title)
+                                Spacer()
+                                Text("(\(userAndPosts.postCount))")
+                            }
+                            
+                            Text(userAndPosts.user.email)
                         }
                     }
                 }
